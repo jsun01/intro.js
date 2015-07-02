@@ -281,6 +281,17 @@
   }
 
   /**
+   * Get the current step
+   *
+   * @api private
+   * @method _getCurrentStep
+   * @returns current step
+   */
+  function _getCurrentStep() {
+    return this._currentStep + 1;
+  }
+
+  /**
    * Go to next step on intro
    *
    * @api private
@@ -678,6 +689,10 @@
         highlightClass = 'introjs-helperLayer',
         elementPosition = _getOffset(targetElement.element);
 
+    // set the current step for later use of its options
+    var currentStep = this._options.steps[ this._currentStep ];
+    this._options.currentStep = currentStep;
+
     //check for a current step highlight class
     if (typeof (targetElement.highlightClass) === 'string') {
       highlightClass += (' ' + targetElement.highlightClass);
@@ -806,6 +821,10 @@
 
         if (i === (targetElement.step-1)) anchorLink.className = 'active';
 
+        // option to disable clickable bullets
+        if(this._options.disableBullets == true) {
+          anchorLink.style.pointerEvents = 'none';
+        }
         anchorLink.href = 'javascript:void(0);';
         anchorLink.innerHTML = "&nbsp;";
         anchorLink.setAttribute('data-stepnumber', this._introItems[i].step);
@@ -875,6 +894,7 @@
       //skip button
       var skipTooltipButton = document.createElement('a');
       skipTooltipButton.className = 'introjs-button introjs-skipbutton';
+      skipTooltipButton.origClassName = skipTooltipButton.className;
       skipTooltipButton.href = 'javascript:void(0);';
       skipTooltipButton.innerHTML = this._options.skipLabel;
 
@@ -926,6 +946,30 @@
       prevTooltipButton.className = 'introjs-button introjs-prevbutton';
       nextTooltipButton.className = 'introjs-button introjs-nextbutton';
       skipTooltipButton.innerHTML = this._options.skipLabel;
+    }
+
+    // options for current step to externally disable / hide buttons
+    skipTooltipButton.className = skipTooltipButton.origClassName;
+    skipTooltipButton.style.pointerEvents = '';
+    if( currentStep.hideSkipButton === true && prevTooltipButton.className.indexOf(' hidden') < 0 ) {
+      skipTooltipButton.className += ' hidden';
+    }
+    if( currentStep.disableSkipButton === true && skipTooltipButton.className.indexOf(' introjs-disabled') < 0 ) {
+      skipTooltipButton.className += ' introjs-disabled';
+    }
+
+    if( currentStep.hidePrevButton === true && prevTooltipButton.className.indexOf(' hidden') < 0 ) {
+      prevTooltipButton.className += ' hidden';
+    }
+    if( currentStep.disablePrevButton === true && prevTooltipButton.className.indexOf(' introjs-disabled') < 0 ) {
+      prevTooltipButton.className += ' introjs-disabled';
+    }
+
+    if( currentStep.hideNextButton === true && nextTooltipButton.className.indexOf(' hidden') < 0 ) {
+      nextTooltipButton.className += ' hidden';
+    }
+    if( currentStep.disableNextButton === true && nextTooltipButton.className.indexOf(' introjs-disabled') < 0 ) {
+      nextTooltipButton.className += ' introjs-disabled';
     }
 
     //Set focus on "next" button, so that hitting Enter always moves you onto the next step
@@ -1198,6 +1242,9 @@
     goToStep: function(step) {
       _goToStep.call(this, step);
       return this;
+    },
+    getCurrentStep: function() {
+      return _getCurrentStep.call(this);
     },
     nextStep: function() {
       _nextStep.call(this);

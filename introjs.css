@@ -284,6 +284,7 @@ tr.introjs-showElement > th {
   background-color: #f4f4f4;
   background-image: none;
   text-decoration: none;
+  pointer-events: none;
 }
 
 .introjs-bullets {
