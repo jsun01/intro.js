@@ -397,6 +397,12 @@
       showElement.className = showElement.className.replace(/introjs-[a-zA-Z]+/g, '').replace(/^\s+|\s+$/g, ''); // This is a manual trim.
     }
 
+    //remove `introjs-showElementEditable` class from the element
+    var showElement = document.querySelector('.introjs-showElementEditable');
+    if (showElement) {
+      showElement.className = showElement.className.replace(/introjs-[a-zA-Z]+/g, '').replace(/^\s+|\s+$/g, ''); // This is a manual trim.
+    }
+
     //remove `introjs-fixParent` class from the elements
     var fixParents = document.querySelectorAll('.introjs-fixParent');
     if (fixParents && fixParents.length > 0) {
@@ -741,6 +747,10 @@
       var oldShowElement = document.querySelector('.introjs-showElement');
       oldShowElement.className = oldShowElement.className.replace(/introjs-[a-zA-Z]+/g, '').replace(/^\s+|\s+$/g, '');
 
+      oldShowElement = document.querySelector('.introjs-showElementEditable');
+      if(oldShowElement && oldShowElement.className)
+        oldShowElement.className = oldShowElement.className.replace(/introjs-[a-zA-Z]+/g, '').replace(/^\s+|\s+$/g, '');
+
       //we should wait until the CSS3 transition is competed (it's 0.3 sec) to prevent incorrect `height` and `width` calculation
       if (self._lastShowElementTimer) {
         clearTimeout(self._lastShowElementTimer);
@@ -975,8 +985,12 @@
     //Set focus on "next" button, so that hitting Enter always moves you onto the next step
     nextTooltipButton.focus();
 
+
     //add target element position style
     targetElement.element.className += ' introjs-showElement';
+    // add editable possibility
+    if(currentStep.editable)
+      targetElement.element.className += 'Editable';
 
     var currentElementPosition = _getPropValue(targetElement.element, 'position');
     if (currentElementPosition !== 'absolute' &&
